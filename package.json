@@ -12,7 +12,6 @@
   "author": "Matheus Santos <matheussm301@gmail.com>",
   "license": "MIT",
   "devDependencies": {
-    "typescript": "^4.0.3",
-    "@happy/eslint-config": "*"
+    "typescript": "^4.0.3"
   }
 }

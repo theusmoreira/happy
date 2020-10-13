@@ -1,12 +1,11 @@
 import React from 'react';
-import {FiArrowRight} from 'react-icons/fi';
+import { FiArrowRight } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
 import logoImg from '../../assets/logo.svg';
 
 import './styles.css';
 
-const Landing: React.FC = () => {
-  return (
+const Landing: React.FC = () => (
     <div id="page-landing">
 
       <div className="content-wrapper">
@@ -28,7 +27,6 @@ const Landing: React.FC = () => {
       </div>
 
     </div>
-  );
-}
+);
 
 export default Landing;
