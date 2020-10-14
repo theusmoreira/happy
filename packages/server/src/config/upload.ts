@@ -2,12 +2,10 @@ import multer, { StorageEngine } from 'multer';
 import path from 'path';
 import crypto from 'crypto';
 
-const tmpFolder = path.resolve(__dirname, '..', '..', 'tmp');
-const uploadsFolder = path.resolve(tmpFolder, 'uploads');
+const uploadsFolder = path.resolve(__dirname, '..', '..', 'uploads');
 
 interface IUploadConfig {
   driver: 'disk';
-  tmpFolder: string;
   uploadsFolder: string;
 
   storage: StorageEngine;
@@ -16,7 +14,6 @@ interface IUploadConfig {
 
 export default {
   driver: 'disk',
-  tmpFolder,
   uploadsFolder,
 
   storage: multer.diskStorage({

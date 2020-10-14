@@ -1,5 +1,7 @@
 import { Request, Response } from 'express';
 import { getRepository } from 'typeorm';
+import orphanageView from '../views/orphanages_views';
+
 import Orphanage from '../models/Orphanage';
 
 export default class OrphanagesController {
@@ -7,9 +9,11 @@ export default class OrphanagesController {
     try {
       const orphanagesRepository = getRepository(Orphanage);
 
-      const orphanages = await orphanagesRepository.find();
+      const orphanages = await orphanagesRepository.find({
+        relations: ['images'],
+      });
 
-      return response.json(orphanages);
+      return response.json(orphanageView.renderMany(orphanages));
     } catch (err) {
       return response.status(400).json({ error: err.message });
     }
@@ -20,9 +24,11 @@ export default class OrphanagesController {
       const { id } = request.params;
       const orphanagesRepository = getRepository(Orphanage);
 
-      const orphanage = await orphanagesRepository.findOneOrFail(id);
+      const orphanage = await orphanagesRepository.findOneOrFail(id, {
+        relations: ['images'],
+      });
 
-      return response.json(orphanage);
+      return response.json(orphanageView.render(orphanage));
     } catch (err) {
       return response.status(400).json({ error: err.message });
     }
