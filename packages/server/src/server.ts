@@ -1,7 +1,15 @@
+/* eslint-disable no-console */
+import 'reflect-metadata';
+import './database/connection';
+
 import express from 'express';
+import Routes from './routes';
 
 const app = express();
 
-app.get('/', (request, response) => response.json({ message: 'Olá Mundo' }));
+app.use(express.json());
+app.use(Routes);
 
-app.listen(3333);
+const PORT = 3333;
+
+app.listen(PORT, () => { console.log(`Server start on port ${PORT}`); });
