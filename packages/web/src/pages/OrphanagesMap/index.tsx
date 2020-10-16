@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { FiArrowRight, FiPlus } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
 import {
@@ -11,8 +11,47 @@ import {
 import logoImg from '../../assets/logo.svg';
 import './styles.css';
 import mapIcon from '../../utils/mapIcon';
+import api from '../../services/api';
 
-const OrphanagesMap: React.FC = () => (
+interface Orphanage {
+  id: string;
+  name: string;
+  latitude: number;
+  longitude: number;
+}
+
+const OrphanagesMap: React.FC = () => {
+  const [orphanages, setOrphanages] = useState<Orphanage[]>([]);
+  const [userCoords, setUserCoords] = useState<[number, number]>([0, 0]);
+
+  useEffect(() => {
+    const loadOrphanages = async () => {
+      await api.get('/orphanages').then((response) => setOrphanages(response.data));
+    };
+    loadOrphanages();
+  }, []);
+
+  // Carregar posição do usuário
+  useEffect(() => {
+    async function loadPosition() {
+      const result = await navigator.permissions.query({ name: 'geolocation' });
+
+      if (result.state !== 'granted') {
+        // eslint-disable-next-line no-alert
+        alert('Oooops... Precisamos de sua permissão para obter sua localizão');
+      }
+      navigator.geolocation.getCurrentPosition((position) => {
+        const { latitude, longitude } = position.coords;
+        setUserCoords([
+          latitude,
+          longitude,
+        ]);
+      });
+    }
+    loadPosition();
+  }, []);
+
+  return (
     <div id="page-map">
       <aside>
         <header>
@@ -29,32 +68,39 @@ const OrphanagesMap: React.FC = () => (
       </aside>
 
       <Map
-        center={[-23.4334719, -46.5809811]}
-        zoom={19}
+        center={userCoords}
+        zoom={16}
         style={{
           width: '100%',
           height: '100%',
         }}
       >
         {/* <TileLayer url="https://a.tile.openstreetmap.org/{z}/{x}/{y}.png"/> */}
-        <TileLayer url={`https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/256/{z}/{x}/{y}@2x?access_token=${process.env.REACT_APP_MAPBOX_TOKEN}`} />
-        <Marker
-        icon={mapIcon}
-        position={[-23.4334719, -46.5809811]}
-        >
-          <Popup closeButton={false} minWidth={240} maxWidth={240} className='map-popup'>
-            Lar da meninas
-            <Link to="/orphanage/1">
-              <FiArrowRight size={20} color="#fff" />
-            </Link>
-          </Popup>
-        </Marker>
+        <TileLayer
+          url={`https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/256/{z}/{x}/{y}@2x?access_token=${process.env.REACT_APP_MAPBOX_TOKEN}`}
+        />
+        {orphanages.map((orphanage) => (
+          <Marker
+          key={orphanage.id}
+          icon={mapIcon}
+          position={[orphanage.latitude, orphanage.longitude]}
+          >
+            <Popup closeButton={false} minWidth={240} maxWidth={240} className='map-popup'>
+              {orphanage.name}
+              <Link to={`/orphanage/${orphanage.id}`}>
+                <FiArrowRight size={20} color="#fff" />
+              </Link>
+            </Popup>
+          </Marker>
+
+        ))}
       </Map>
 
       <Link to='/orphanage/create' className='create-orphanage'>
         <FiPlus size={30} color='#fff'/>
       </Link>
     </div>
-);
+  );
+};
 
 export default OrphanagesMap;
