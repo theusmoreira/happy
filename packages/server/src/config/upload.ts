@@ -20,7 +20,7 @@ export default {
     destination: uploadsFolder,
     filename(request, file, callback) {
       const fileHash = crypto.randomBytes(10).toString('hex');
-      const filename = `${fileHash}-${file.originalname}`;
+      const filename = `${fileHash}-${file.path}`;
 
       return callback(null, filename);
     },

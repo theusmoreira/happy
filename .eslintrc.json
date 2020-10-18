@@ -28,6 +28,7 @@
       "@typescript-eslint"
     ],
     "rules": {
+      "no-alert":"off",
       "camelcase":"off",
       "class-methods-use-this":"off",
       "no-use-before-define":"off",

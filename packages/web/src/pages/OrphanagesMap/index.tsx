@@ -37,8 +37,7 @@ const OrphanagesMap: React.FC = () => {
       const result = await navigator.permissions.query({ name: 'geolocation' });
 
       if (result.state !== 'granted') {
-        // eslint-disable-next-line no-alert
-        alert('Oooops... Precisamos de sua permissão para obter sua localizão');
+        alert('Oooops... Precisamos de sua permissão para obter sua localização');
       }
       navigator.geolocation.getCurrentPosition((position) => {
         const { latitude, longitude } = position.coords;

@@ -8,7 +8,7 @@ import OrphanagesMap from './pages/OrphanagesMap';
 const Routes: React.FC = () => (
       <Switch>
         <Route exact path='/' component={Landing} />
-        <Route path='/map' component={OrphanagesMap} />
+        <Route path='/app' component={OrphanagesMap} />
         <Route path='/orphanage/create' component={CreateOrphanage} />
         <Route path='/orphanage/:id' component={Orphanage} />
       </Switch>

@@ -30,6 +30,7 @@ interface RouterParams {
 const Orphanage: React.FC = () => {
   const { id } = useParams<RouterParams>();
   const [orphanage, setOrphanage] = useState<Orphanage>();
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
   useEffect(() => {
     const loadOrphanage = async () => {
       await api.get(`/orphanages/${id}`).then((response) => {
@@ -48,11 +49,17 @@ const Orphanage: React.FC = () => {
       <Sidebar />
       <main>
         <div className="orphanage-details">
-          <img src={orphanage.images[0].url} alt={orphanage.name}/>
+          <img src={orphanage.images[activeImageIndex].url} alt={orphanage.name}/>
 
           <div className="images">
-           {orphanage.images.map((image) => (
-              <button key={image.id} className="active" type="button">
+           {orphanage.images.map((image, index) => (
+              <button
+                onClick={() => {
+                  setActiveImageIndex(index);
+                }}
+                key={image.id}
+                className={activeImageIndex === index ? 'active' : ''}
+                type="button">
               <img src={image.url} alt={orphanage.name} />
             </button>
 
@@ -67,7 +74,7 @@ const Orphanage: React.FC = () => {
 
             <div className="map-container">
               <Map
-                center={[-27.2092052, -49.6401092]}
+                center={[orphanage.latitude, orphanage.longitude]}
                 zoom={16}
                 style={{ width: '100%', height: 280 }}
                 dragging={false}
@@ -77,12 +84,12 @@ const Orphanage: React.FC = () => {
                 doubleClickZoom={false}
               >
                 <TileLayer
-                  url={`https://api.mapbox.com/styles/v1/mapbox/light-v10/tiles/256/{z}/{x}/{y}@2x?access_token=${process.env.REACT_APP_MAPBOX_TOKEN}`}
+                  url={`https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/256/{z}/{x}/{y}@2x?access_token=${process.env.REACT_APP_MAPBOX_TOKEN}`}
                 />
                 <Marker
                   interactive={false}
                   icon={mapIcon}
-                  position={[-27.2092052, -49.6401092]}
+                  position={[orphanage.latitude, orphanage.longitude]}
                 />
               </Map>
 
